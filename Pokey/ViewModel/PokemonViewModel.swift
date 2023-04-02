@@ -22,11 +22,26 @@ class PokemonDetailViewModel: ObservableObject {
     }
     // MARK: Change this disgusting metric.
     var height: String {
-        return model.height
+        let str = model.height
+        
+        let strDropped = str.dropLast(2)
+        let number = Double(strDropped)
+        let converted = (number ?? 0) * 3.28084
+        let rounded = round((converted * 100)) / 100.0
+        
+        return "\(rounded) feet"
     }
     // MARK: Change this disgusting metric.
     var weight: String {
-        return model.weight
+        let str = model.weight
+        
+        let strDropped = str.dropLast(3)
+        let number = Double(strDropped)
+        let converted = (number ?? 0) * 2.2
+        let rounded = round((converted * 100)) / 100.0
+        
+        
+        return "\(rounded) lbs"
     }
     
     var id: Int {
@@ -50,15 +65,40 @@ class PokemonDetailViewModel: ObservableObject {
     }
     // MARK: Computed property getting a list of the Pokemon's next evolutions.
     var nextEvolutions: [Pokemon]? {
-        return nil
+        var nextEvolutions: [Pokemon] = []
+        
+        for pokemon in model.nextEvolution ?? [] {
+            nextEvolutions.append(PokedexService.shared.getPokemonFromNum(num: pokemon.num))
+        }
+        
+        return nextEvolutions
         
     }
     // MARK: Computed property getting a list of the Pokemon's previous evolutions.
     var prevEvolutions: [Pokemon]? {
-        return nil
+        var prevEvolutions: [Pokemon] = []
+        
+        for pokemon in model.prevEvolution ?? [] {
+            prevEvolutions.append(PokedexService.shared.getPokemonFromNum(num: pokemon.num))
+        }
+        
+        return prevEvolutions
+        
     }
     // MARK: Returns the list of Pokemon in this Pokemon's evolution series. This will be a list of previous evolutions + current form + next evolutions
     var evolutionSeries: [Pokemon] {
-        return []
+        var evolutionSeries: [Pokemon] = []
+        
+        for pokemon in prevEvolutions ?? [] {
+            evolutionSeries.append(pokemon)
+        }
+        
+        evolutionSeries.append(model)
+        
+        for pokemon in nextEvolutions ?? [] {
+            evolutionSeries.append(pokemon)
+        }
+        
+        return evolutionSeries
     }
 }

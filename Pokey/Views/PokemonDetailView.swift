@@ -86,6 +86,11 @@ struct PokemonDetailView: View {
         Text("Evolutions")
             .pokeyFont(size: 20, dynamicSize: .title2)
         // MARK: Add to this. Be sure to use EvolutionView
+        HStack {
+            ForEach(vm.evolutionSeries) {
+                EvolutionView(pokemon: $0)
+            }
+        }
     }
     
 }
